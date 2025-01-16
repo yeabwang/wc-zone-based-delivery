@@ -37,4 +37,29 @@ jQuery(document).ready(function($) {
             }
         });
     });
+
+    // When the state is changed, fetch the postcodes
+    $('#state').on('change', function() {
+        var state = $(this).val();
+        if (state) {
+            $.ajax({
+                url: ZoneDelivery.ajax_url,
+                method: 'POST',
+                data: {
+                    action: 'wc_get_postcodes',
+                    state: state
+                },
+                success: function(response) {
+                    if (response.success) {
+                        var postcodes = response.data.postcodes;
+                        var container = $('#postcodes-container');
+                        container.empty();
+                        postcodes.forEach(function(postcode) {
+                            container.append('<label><input type="checkbox" name="wc_zone_postcodes[]" value="' + postcode + '"> ' + postcode + '</label><br>');
+                        });
+                    }
+                }
+            });
+        }
+    });
 });

@@ -39,3 +39,25 @@ if (!function_exists('wc_zone_based_delivery_check_availability')) {
 // Register the AJAX handlers for logged-in and guest users
 add_action('wp_ajax_wc_check_availability', 'wc_zone_based_delivery_check_availability');
 add_action('wp_ajax_nopriv_wc_check_availability', 'wc_zone_based_delivery_check_availability');
+
+// Ensure function is only declared once
+if (!function_exists('wc_zone_based_delivery_get_postcodes')) {
+    // AJAX Handler for fetching postcodes based on state
+    function wc_zone_based_delivery_get_postcodes() {
+        $state = isset($_POST['state']) ? sanitize_text_field($_POST['state']) : '';
+        $locations = wc_zone_based_delivery_get_states_from_api();
+        $postcodes = [];
+
+        foreach ($locations as $location) {
+            if ($location['StateShort'] === $state) {
+                $postcodes[] = $location['Postcode'];
+            }
+        }
+
+        wp_send_json_success(['postcodes' => $postcodes]);
+    }
+}
+
+// Register the AJAX handler for fetching postcodes
+add_action('wp_ajax_wc_get_postcodes', 'wc_zone_based_delivery_get_postcodes');
+add_action('wp_ajax_nopriv_wc_get_postcodes', 'wc_zone_based_delivery_get_postcodes');

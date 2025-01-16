@@ -5,7 +5,7 @@
     padding: 20px;
     border-radius: 8px;
     max-width: 400px;
-    margin: 0 auto;
+    margin: 20px 0;
 }
 
 #check-availability-form h3 {
@@ -21,18 +21,18 @@
 
 #check-availability-form input[type="text"] {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    margin-bottom: 15px;
+    margin: 10px 0;
     font-size: 14px;
 }
 
 #check-availability-form button {
-    background-color: #007cba;
+    background-color: #0073aa;
     color: #fff;
     border: none;
-    padding: 10px 15px;
+    padding: 10px 20px;
     font-size: 14px;
     border-radius: 4px;
     cursor: pointer;
@@ -40,15 +40,16 @@
 }
 
 #check-availability-form button:hover {
-    background-color: #005f8d;
+    background-color: #005177;
 }
 
 /* Styles for the result message */
 #availability-result {
-    margin-top: 15px;
+    margin-top: 20px;
     padding: 10px;
     border-radius: 4px;
     font-size: 14px;
+    border: 1px solid #ddd;
 }
 
 #availability-result p {

@@ -1,52 +1,53 @@
 <?php
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly
+}
+
 // Fetch states from the API
 $state_options = get_states_from_api();
 $zones = get_zones_from_db();
 ?>
 
 <div class="wrap">
-    <h1>Zone-Based Delivery</h1>
+    <h1><?php _e('Zone Based Delivery', 'wc-zone-based-delivery'); ?></h1>
 
-    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-        <input type="hidden" name="action" value="save_zone">
+    <form method="post" action="options.php">
+        <?php settings_fields('wc_zone_based_delivery_options'); ?>
+        <?php do_settings_sections('wc_zone_based_delivery'); ?>
         <table class="form-table">
-            <tr>
-                <th><label for="zone_name">Zone Name</label></th>
-                <td><input type="text" name="zone_name" id="zone_name" required></td>
+            <tr valign="top">
+                <th scope="row"><?php _e('Zone Name', 'wc-zone-based-delivery'); ?></th>
+                <td><input type="text" name="wc_zone_name" value="<?php echo esc_attr(get_option('wc_zone_name')); ?>" /></td>
             </tr>
-            <tr>
-                <th><label for="regional_metro">Regional/Metro</label></th>
+            <tr valign="top">
+                <th scope="row"><?php _e('Regional/Metro', 'wc-zone-based-delivery'); ?></th>
                 <td>
-                    <select name="regional_metro" id="regional_metro" required>
-                        <option value="metro">Metro</option>
-                        <option value="regional">Regional</option>
+                    <select name="wc_zone_type">
+                        <option value="regional"><?php _e('Regional', 'wc-zone-based-delivery'); ?></option>
+                        <option value="metro"><?php _e('Metro', 'wc-zone-based-delivery'); ?></option>
                     </select>
                 </td>
             </tr>
-            <tr>
-                <th><label for="state">State</label></th>
+            <tr valign="top">
+                <th scope="row"><?php _e('State', 'wc-zone-based-delivery'); ?></th>
                 <td>
-                    <select name="state" id="state" required>
-                        <?php foreach ($state_options as $state) : ?>
-                            <option value="<?php echo esc_attr($state['StateShort']); ?>">
-                                <?php echo esc_html($state['State']); ?>
-                            </option>
-                        <?php endforeach; ?>
+                    <select id="state" name="wc_zone_state">
+                        <!-- Options populated by JavaScript -->
                     </select>
                 </td>
             </tr>
-            <tr>
-                <th><label for="postcodes">Postcodes</label></th>
+            <tr valign="top">
+                <th scope="row"><?php _e('Postcodes', 'wc-zone-based-delivery'); ?></th>
                 <td id="postcodes-container">
-                    <!-- Dynamically populated postcodes will go here -->
+                    <!-- Checkboxes populated by JavaScript -->
                 </td>
             </tr>
-            <tr>
-                <th><label for="custom_message">Custom Message</label></th>
-                <td><textarea name="custom_message" id="custom_message" required></textarea></td>
+            <tr valign="top">
+                <th scope="row"><?php _e('Custom Message', 'wc-zone-based-delivery'); ?></th>
+                <td><textarea name="wc_zone_custom_message"><?php echo esc_textarea(get_option('wc_zone_custom_message')); ?></textarea></td>
             </tr>
         </table>
-        <p><input type="submit" class="button-primary" value="Save Zone"></p>
+        <?php submit_button(); ?>
     </form>
 
     <h2>Existing Zones</h2>
