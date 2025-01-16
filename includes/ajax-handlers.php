@@ -21,9 +21,9 @@ function wc_zone_based_delivery_check_availability() {
     // Match the input against each zone
     foreach ($zones as $zone) {
         if (
-            str_contains(strtolower($zone['state']), strtolower($input)) ||
+            (stripos($zone['state'], $input) !== false) || // Use stripos() instead of str_contains()
             in_array($input, $zone['postcodes']) ||
-            str_contains(strtolower($zone['zone_name']), strtolower($input))
+            (stripos($zone['zone_name'], $input) !== false) // Use stripos() instead of str_contains()
         ) {
             $response = ['message' => esc_html($zone['custom_message'])];
             break;
