@@ -1,0 +1,37 @@
+<?php
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly
+}
+
+// Save Zone Data Handler
+function wc_zone_based_delivery_save_zone() {
+    // Check if the user has the required permissions
+    if (!current_user_can('manage_options')) {
+        wp_die(__('Unauthorized access', 'wc-zone-based-delivery'));
+    }
+
+    // Validate nonce for security
+    check_admin_referer('save_zone_action', 'save_zone_nonce');
+
+    // Get zones stored in the database
+    $zones = get_option('wc_zones', []);
+
+    // Sanitize and add the new zone data
+    $zones[] = [
+        'zone_name'      => sanitize_text_field($_POST['zone_name']),
+        'regional_metro' => sanitize_text_field($_POST['regional_metro']),
+        'state'          => sanitize_text_field($_POST['state']),
+        'postcodes'      => isset($_POST['postcodes']) ? array_map('sanitize_text_field', $_POST['postcodes']) : [],
+        'custom_message' => sanitize_textarea_field($_POST['custom_message']),
+    ];
+
+    // Update the option with new zone data
+    update_option('wc_zones', $zones);
+
+    // Redirect back to the admin page with a success message
+    wp_redirect(admin_url('admin.php?page=zone-based-delivery&status=success'));
+    exit;
+}
+
+// Add the save_zone action to handle form submission
+add_action('admin_post_save_zone', 'wc_zone_based_delivery_save_zone');

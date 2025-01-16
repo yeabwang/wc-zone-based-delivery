@@ -1,0 +1,70 @@
+/* Styles for the check availability form */
+#check-availability-form {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+#check-availability-form h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+#check-availability-form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#check-availability-form input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+#check-availability-form button {
+    background-color: #007cba;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#check-availability-form button:hover {
+    background-color: #005f8d;
+}
+
+/* Styles for the result message */
+#availability-result {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+#availability-result p {
+    margin: 0;
+}
+
+/* Success message style */
+#availability-result.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+/* Error message style */
+#availability-result.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
