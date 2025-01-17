@@ -35,7 +35,10 @@ function wc_zone_based_delivery_admin_page() {
 // Enqueue scripts and styles
 function wc_zone_based_delivery_enqueue_scripts() {
     wp_enqueue_script('wc-zone-based-delivery-script', plugin_dir_url(__FILE__) . 'assets/js/script.js', ['jquery'], '1.0', true);
-    wp_localize_script('wc-zone-based-delivery-script', 'ZoneDelivery', ['ajax_url' => admin_url('admin-ajax.php')]);
+    wp_localize_script('wc-zone-based-delivery-script', 'ZoneDelivery', [
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'states_action' => 'wc_get_states' // Action to fetch states via AJAX
+    ]);
     wp_enqueue_style('wc-zone-based-delivery-style', plugin_dir_url(__FILE__) . 'assets/css/styles.css');
 }
 add_action('admin_enqueue_scripts', 'wc_zone_based_delivery_enqueue_scripts');

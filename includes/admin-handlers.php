@@ -21,7 +21,7 @@ function wc_zone_based_delivery_save_zone() {
         $zone_name = sanitize_text_field($_POST['wc_zone_name']);
         $zone_type = sanitize_text_field($_POST['wc_zone_type']);
         $zone_state = sanitize_text_field($_POST['wc_zone_state']);
-        $zone_postcodes = array_map('sanitize_text_field', $_POST['wc_zone_postcodes']);
+        $zone_postcodes = isset($_POST['wc_zone_postcodes']) && is_array($_POST['wc_zone_postcodes']) ? array_map('sanitize_text_field', $_POST['wc_zone_postcodes']) : []; // Enhanced check for postcodes
         $zone_custom_message = sanitize_textarea_field($_POST['wc_zone_custom_message']);
 
         $zones[] = [
@@ -33,12 +33,11 @@ function wc_zone_based_delivery_save_zone() {
         ];
     }
 
-
     // Update the option with new zone data
     update_option('wc_zones', $zones);
 
     // Redirect back to the admin page with a success message
-    wp_redirect(admin_url('admin.php?page=zone-based-delivery&status=success'));
+    wp_redirect(admin_url('admin.php?page=zone-based-delivery&status=success&message=' . urlencode(__('Zone data saved successfully', 'wc-zone-based-delivery'))));
     exit;
 }
 

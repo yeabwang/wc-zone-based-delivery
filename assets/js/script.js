@@ -13,13 +13,17 @@ jQuery(document).ready(function($) {
         // Show a loading message
         $('#availability-result').html('<p>Checking availability...</p>');
 
+        // Add nonce value to the request for security
+        var nonce = $('#check-availability-button').data('nonce');
+
         // AJAX request to check availability
         $.ajax({
             url: ZoneDelivery.ajax_url, // The AJAX URL
             method: 'POST',
             data: {
                 action: 'wc_check_availability',
-                input: postcode // Send the input to the server
+                input: postcode, // Send the input to the server
+                nonce: nonce // Pass nonce for security
             },
             success: function(response) {
                 // Handle the response from the server
@@ -42,22 +46,38 @@ jQuery(document).ready(function($) {
     $('#state').on('change', function() {
         var state = $(this).val();
         if (state) {
+            // Add nonce to the request for security
+            var nonce = $('#state').data('nonce');
+
+            // Show loading message while fetching postcodes
+            $('#postcodes-container').html('<p>Loading postcodes...</p>');
+
             $.ajax({
                 url: ZoneDelivery.ajax_url,
                 method: 'POST',
                 data: {
                     action: 'wc_get_postcodes',
-                    state: state
+                    state: state,
+                    nonce: nonce // Pass nonce for security
                 },
                 success: function(response) {
                     if (response.success) {
                         var postcodes = response.data.postcodes;
                         var container = $('#postcodes-container');
-                        container.empty();
-                        postcodes.forEach(function(postcode) {
-                            container.append('<label><input type="checkbox" name="wc_zone_postcodes[]" value="' + postcode + '"> ' + postcode + '</label><br>');
-                        });
+                        container.empty(); // Clear existing postcodes
+                        if (postcodes.length > 0) {
+                            postcodes.forEach(function(postcode) {
+                                container.append('<label><input type="checkbox" name="wc_zone_postcodes[]" value="' + postcode + '"> ' + postcode + '</label><br>');
+                            });
+                        } else {
+                            container.html('<p>No postcodes found for this state.</p>');
+                        }
+                    } else {
+                        $('#postcodes-container').html('<p>' + response.data.message + '</p>');
                     }
+                },
+                error: function() {
+                    $('#postcodes-container').html('<p>Failed to fetch postcodes. Please try again later.</p>');
                 }
             });
         }

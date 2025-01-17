@@ -7,7 +7,12 @@ if (!defined('ABSPATH')) {
 if (!function_exists('wc_zone_based_delivery_check_availability')) {
     // AJAX Handler for checking delivery availability
     function wc_zone_based_delivery_check_availability() {
-        // Get the user input from the request
+        // Check the nonce for security
+        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'wc_zone_based_delivery_nonce')) {
+            wp_send_json_error(['message' => __('Nonce verification failed', 'wc-zone-based-delivery')]);
+        }
+
+        // Get the user input from the request and sanitize
         $input = isset($_POST['input']) ? sanitize_text_field($_POST['input']) : '';
 
         if (empty($input)) {
@@ -44,14 +49,34 @@ add_action('wp_ajax_nopriv_wc_check_availability', 'wc_zone_based_delivery_check
 if (!function_exists('wc_zone_based_delivery_get_postcodes')) {
     // AJAX Handler for fetching postcodes based on state
     function wc_zone_based_delivery_get_postcodes() {
-        $state = isset($_POST['state']) ? sanitize_text_field($_POST['state']) : '';
-        $locations = wc_zone_based_delivery_get_states_from_api();
-        $postcodes = [];
+        // Check the nonce for security
+        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'wc_zone_based_delivery_nonce')) {
+            wp_send_json_error(['message' => __('Nonce verification failed', 'wc-zone-based-delivery')]);
+        }
 
+        // Sanitize the state input
+        $state = isset($_POST['state']) ? sanitize_text_field($_POST['state']) : '';
+
+        if (empty($state)) {
+            wp_send_json_error(['message' => __('State is required', 'wc-zone-based-delivery')]);
+        }
+
+        // Fetch locations from the API
+        $locations = wc_zone_based_delivery_get_states_from_api();
+        
+        if (empty($locations)) {
+            wp_send_json_error(['message' => __('Failed to fetch locations. Please try again later.', 'wc-zone-based-delivery')]);
+        }
+
+        $postcodes = [];
         foreach ($locations as $location) {
-            if ($location['StateShort'] === $state) {
-                $postcodes[] = $location['Postcode'];
+            if (isset($location['StateShort']) && $location['StateShort'] === $state) {
+                $postcodes[] = isset($location['Postcode']) ? $location['Postcode'] : '';
             }
+        }
+
+        if (empty($postcodes)) {
+            wp_send_json_error(['message' => __('No postcodes found for the selected state.', 'wc-zone-based-delivery')]);
         }
 
         wp_send_json_success(['postcodes' => $postcodes]);
