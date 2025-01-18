@@ -26,6 +26,17 @@ function wc_zone_based_delivery_admin_menu() {
     );
 }
 add_action('admin_menu', 'wc_zone_based_delivery_admin_menu');
+add_action('admin_init', 'wc_zone_based_delivery_register_settings');
+
+
+function wc_zone_based_delivery_register_settings() {
+    // Register settings
+    register_setting('wc_zone_based_delivery_options', 'wc_zone_name');
+    register_setting('wc_zone_based_delivery_options', 'wc_zone_type');
+    register_setting('wc_zone_based_delivery_options', 'wc_zone_state');
+    register_setting('wc_zone_based_delivery_options', 'wc_zone_postcodes');
+    register_setting('wc_zone_based_delivery_options', 'wc_zone_custom_message');
+}
 
 // Admin page callback
 function wc_zone_based_delivery_admin_page() {

@@ -4,17 +4,19 @@ if (!defined('ABSPATH')) {
 }
 
 // Save Zone Data Handler
-function wc_zone_based_delivery_save_zone() {
+function wc_zone_based_delivery_save_zones() {
     // Check if the user has the required permissions
     if (!current_user_can('manage_options')) {
         wp_die(__('Unauthorized access', 'wc-zone-based-delivery'));
     }
 
     // Validate nonce for security
-    check_admin_referer('save_zone_action', 'save_zone_nonce');
+    check_admin_referer('wc_zone_based_delivery_nonce', 'nonce');
 
     // Get zones stored in the database
     $zones = get_option('wc_zones', []);
+
+    print_r($zones);
 
     // Sanitize and add the new zone data
     if (isset($_POST['wc_zone_name'])) {
@@ -33,13 +35,16 @@ function wc_zone_based_delivery_save_zone() {
         ];
     }
 
+    print_r($zones);
+    die();
+
     // Update the option with new zone data
     update_option('wc_zones', $zones);
 
     // Redirect back to the admin page with a success message
-    wp_redirect(admin_url('admin.php?page=zone-based-delivery&status=success&message=' . urlencode(__('Zone data saved successfully', 'wc-zone-based-delivery'))));
+    wp_redirect(admin_url('admin.php?page=wc-zone-based-delivery&status=success&message=' . urlencode(__('Zone data saved successfully', 'wc-zone-based-delivery'))));
     exit;
 }
 
 // Add the save_zone action to handle form submission
-add_action('admin_post_wc_save_zone', 'wc_zone_based_delivery_save_zone');
+add_action('admin_post_wc_save_zone', 'wc_zone_based_delivery_save_zones');

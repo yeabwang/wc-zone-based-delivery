@@ -8,9 +8,9 @@ if (!function_exists('wc_zone_based_delivery_check_availability')) {
     // AJAX Handler for checking delivery availability
     function wc_zone_based_delivery_check_availability() {
         // Check the nonce for security
-        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'wc_zone_based_delivery_nonce')) {
+        /*if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'wc_zone_based_delivery_nonce')) {
             wp_send_json_error(['message' => __('Nonce verification failed', 'wc-zone-based-delivery')]);
-        }
+        }*/
 
         // Get the user input from the request and sanitize
         $input = isset($_POST['input']) ? sanitize_text_field($_POST['input']) : '';
@@ -50,9 +50,9 @@ if (!function_exists('wc_zone_based_delivery_get_postcodes')) {
     // AJAX Handler for fetching postcodes based on state
     function wc_zone_based_delivery_get_postcodes() {
         // Check the nonce for security
-        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'wc_zone_based_delivery_nonce')) {
+        /*if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'wc_zone_based_delivery_nonce')) {
             wp_send_json_error(['message' => __('Nonce verification failed', 'wc-zone-based-delivery')]);
-        }
+        }*/
 
         // Sanitize the state input
         $state = isset($_POST['state']) ? sanitize_text_field($_POST['state']) : '';
@@ -61,7 +61,7 @@ if (!function_exists('wc_zone_based_delivery_get_postcodes')) {
             wp_send_json_error(['message' => __('State is required', 'wc-zone-based-delivery')]);
         }
 
-        // Fetch locations from the API
+        /*// Fetch locations from the API
         $locations = wc_zone_based_delivery_get_states_from_api();
         
         if (empty($locations)) {
@@ -73,7 +73,34 @@ if (!function_exists('wc_zone_based_delivery_get_postcodes')) {
             if (isset($location['StateShort']) && $location['StateShort'] === $state) {
                 $postcodes[] = isset($location['Postcode']) ? $location['Postcode'] : '';
             }
+        }*/
+
+        $postcode_ranges = [
+            'New South Wales' => [2000, 2599],
+            'Victoria' => [3000, 3999],
+            'Queensland' => [4000, 4999],
+            'South Australia' => [5000, 5999],
+            'Western Australia' => [6000, 6999],
+            'Tasmania' => [7000, 7999],
+            'Australian Capital Territory' => [200, 299], // Leading zero not needed in PHP
+            'Northern Territory' => [800, 999],          // Leading zero not needed in PHP
+        ];
+
+        // Check if the state is valid
+        if (!isset($postcode_ranges[$state])) {
+            wp_send_json_error(['message' => __('Failed to fetch locations. Please try again later.', 'wc-zone-based-delivery')]);
         }
+
+        // Get the range for the given state
+        [$start, $end] = $postcode_ranges[$state];
+
+        // Generate all postcodes in the range
+        $postcodes = [];
+        for ($i = $start; $i <= $end; $i++) {
+            $postcodes[] = str_pad($i, 4, '0', STR_PAD_LEFT); // Ensure 4 digits
+        }
+
+        //return $postcodes;
 
         if (empty($postcodes)) {
             wp_send_json_error(['message' => __('No postcodes found for the selected state.', 'wc-zone-based-delivery')]);
