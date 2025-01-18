@@ -43,7 +43,7 @@ jQuery(document).ready(function($) {
     });
 
     // When the state is changed, fetch the postcodes
-    $('#state').on('change', function() {
+    /*$('#state').on('change', function() {
         var state = $(this).val();
         if (state) {
             // Add nonce to the request for security
@@ -81,5 +81,5 @@ jQuery(document).ready(function($) {
                 }
             });
         }
-    });
+    });*/
 });
