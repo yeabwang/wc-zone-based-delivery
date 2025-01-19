@@ -1,45 +1,44 @@
 jQuery(document).ready(function($) {
-    // When the "Check Availability" button is clicked
-    $('#check-availability-button').on('click', function(e) {
+
+    $('.check-availability-button').on('click', function (e) {
         e.preventDefault(); // Prevent the default form submission
+        var form = $(this).closest('.check-availability-form');
+        var postcodeInput = form.find('.postcode');
+        var resultDiv = form.find('.availability-result');
+        resultDiv.show();
 
-        var postcode = $('#postcode').val().trim(); // Get the value of the input field
+        if (form[0].checkValidity()) {
 
-        if (postcode === '') {
-            $('#availability-result').html('<p>Please enter a suburb, state, or postcode.</p>');
-            return;
-        }
+            var postcode = postcodeInput.val().trim();
 
-        // Show a loading message
-        $('#availability-result').html('<p>Checking availability...</p>');
+            resultDiv.html('<p>Checking availability...</p>');
+            var nonce = $(this).data('nonce');
 
-        // Add nonce value to the request for security
-        var nonce = $('#check-availability-button').data('nonce');
-
-        // AJAX request to check availability
-        $.ajax({
-            url: ZoneDelivery.ajax_url, // The AJAX URL
-            method: 'POST',
-            data: {
-                action: 'wc_check_availability',
-                input: postcode, // Send the input to the server
-                nonce: nonce // Pass nonce for security
-            },
-            success: function(response) {
-                // Handle the response from the server
-                if (response.success) {
-                    // Display the custom message from the zone
-                    $('#availability-result').html('<p>' + response.data.message + '</p>');
-                } else {
-                    // Display an error message if no matching zone is found
-                    $('#availability-result').html('<p>' + response.data.message + '</p>');
+            $.ajax({
+                url: ZoneDelivery.ajax_url, // The AJAX URL
+                method: 'POST',
+                data: {
+                    action: 'wc_check_availability',
+                    input: postcode, // Send the input to the server
+                    nonce: nonce // Pass nonce for security
+                },
+                success: function (response) {
+                    if (response.success) {
+                        $(resultDiv).html('<p>' + response.data.message + '</p>');
+                    } else {
+                        $(resultDiv).html('<p>' + response.data.message + '</p>');
+                    }
+                },
+                error: function () {
+                    $(resultDiv).html('<p>An error occurred while checking availability. Please try again later.</p>');
                 }
-            },
-            error: function() {
-                // Display an error message if the AJAX request fails
-                $('#availability-result').html('<p>An error occurred while checking availability. Please try again later.</p>');
-            }
-        });
+            });
+        }
+        else{
+            form[0].reportValidity();
+
+            resultDiv.html('<p>Please enter a suburb, state, or postcode.</p>');
+        }
     });
 
     // When the state is changed, fetch the postcodes

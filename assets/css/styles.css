@@ -1,5 +1,5 @@
 /* Styles for the check availability form */
-#check-availability-form {
+.check-availability-form {
     background-color: #f9f9f9;
     border: 1px solid #ddd;
     padding: 20px;
@@ -8,18 +8,18 @@
     margin: 20px 0;
 }
 
-#check-availability-form h3 {
+.check-availability-form h3 {
     font-size: 18px;
     margin-bottom: 15px;
 }
 
-#check-availability-form label {
+.check-availability-form label {
     display: block;
     font-weight: bold;
     margin-bottom: 5px;
 }
 
-#check-availability-form input[type="text"] {
+.check-availability-form input[type="text"] {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
@@ -28,7 +28,7 @@
     font-size: 14px;
 }
 
-#check-availability-form button {
+.check-availability-form button {
     background-color: #0073aa;
     color: #fff;
     border: none;
@@ -39,12 +39,12 @@
     transition: background-color 0.3s ease;
 }
 
-#check-availability-form button:hover {
+.check-availability-form button:hover {
     background-color: #005177;
 }
 
 /* Styles for the result message */
-#availability-result {
+.availability-result {
     margin-top: 20px;
     padding: 10px;
     border-radius: 4px;
@@ -52,19 +52,19 @@
     border: 1px solid #ddd;
 }
 
-#availability-result p {
+.availability-result p {
     margin: 0;
 }
 
 /* Success message style */
-#availability-result.success {
+.availability-result.success {
     background-color: #d4edda;
     color: #155724;
     border: 1px solid #c3e6cb;
 }
 
 /* Error message style */
-#availability-result.error {
+.availability-result.error {
     background-color: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
