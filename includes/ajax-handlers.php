@@ -109,7 +109,68 @@ if (!function_exists('wc_zone_based_delivery_get_postcodes')) {
         wp_send_json_success(['postcodes' => $postcodes]);
     }
 }
-
-// Register the AJAX handler for fetching postcodes
 add_action('wp_ajax_wc_get_postcodes', 'wc_zone_based_delivery_get_postcodes');
 add_action('wp_ajax_nopriv_wc_get_postcodes', 'wc_zone_based_delivery_get_postcodes');
+
+
+if (!function_exists('wc_zone_based_delivery_edit_zone')) {
+    function wc_zone_based_delivery_edit_zone() {
+
+        //check_ajax_referer('wc_zone_based_delivery_nonce', 'nonce');
+
+        // Get the index of the zone to remove
+        $index = isset($_POST['index']) ? intval($_POST['index']) : null;
+
+        if ($index === null) {
+            wp_send_json_error(['message' => __('Invalid zone index.', 'wc-zone-based-delivery')]);
+        }
+
+        // Get the current zones
+        $zones = get_option('wc_zones', []);
+
+        if (!isset($zones[$index])) {
+            wp_send_json_error(['message' => __('Zone not found.', 'wc-zone-based-delivery')]);
+        }
+
+        $zone = $zones[$index];
+        wp_send_json_success(['zone' => $zone]);
+    }
+}
+add_action('wp_ajax_wc_edit_zone', 'wc_zone_based_delivery_edit_zone');
+add_action('wp_ajax_nopriv_wc_edit_zone', 'wc_zone_based_delivery_edit_zone');
+
+
+if (!function_exists('wc_zone_based_delivery_remove_zone')) {
+    // AJAX Handler for fetching postcodes based on state
+    function wc_zone_based_delivery_remove_zone() {
+
+        //check_ajax_referer('wc_zone_based_delivery_nonce', 'nonce');
+
+        // Get the index of the zone to remove
+        $index = isset($_POST['index']) ? intval($_POST['index']) : null;
+
+        if ($index === null) {
+            wp_send_json_error(['message' => __('Invalid zone index.', 'wc-zone-based-delivery')]);
+        }
+
+        // Get the current zones
+        $zones = get_option('wc_zones', []);
+
+        if (!isset($zones[$index])) {
+            wp_send_json_error(['message' => __('Zone not found.', 'wc-zone-based-delivery')]);
+        }
+
+        // Remove the zone
+        unset($zones[$index]);
+
+        // Re-index the array and save it
+        $zones = array_values($zones);
+        update_option('wc_zones', $zones);
+
+        wp_send_json_success();
+    }
+}
+
+// Register the AJAX handler for fetching postcodes
+add_action('wp_ajax_wc_remove_zone', 'wc_zone_based_delivery_remove_zone');
+add_action('wp_ajax_nopriv_wc_remove_zone', 'wc_zone_based_delivery_remove_zone');

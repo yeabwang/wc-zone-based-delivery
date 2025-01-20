@@ -51,6 +51,30 @@ function wc_zone_based_delivery_enqueue_scripts() {
         'states_action' => 'wc_get_states' // Action to fetch states via AJAX
     ]);
     wp_enqueue_style('wc-zone-based-delivery-style', plugin_dir_url(__FILE__) . 'assets/css/styles.css');
+    // Load Bootstrap CSS
+    wp_enqueue_style(
+        'bootstrap-css',
+        'https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css',
+        [],
+        '4.5.2'
+    );
+
+    // Load Bootstrap JS and Popper.js
+    wp_enqueue_script(
+        'bootstrap-js',
+        'https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js',
+        ['jquery', 'popper-js'],
+        '4.5.2',
+        true
+    );
+
+    wp_enqueue_script(
+        'popper-js',
+        'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js',
+        [],
+        '1.16.1',
+        true
+    );
 }
 add_action('admin_enqueue_scripts', 'wc_zone_based_delivery_enqueue_scripts');
 add_action('wp_enqueue_scripts', 'wc_zone_based_delivery_enqueue_scripts');
